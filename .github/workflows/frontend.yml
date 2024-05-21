@@ -20,6 +20,10 @@ jobs:
   build_bisheng:
     runs-on: ubuntu-latest
     # if: startsWith(github.event.ref, 'refs/tags')
+    services:
+      docker:
+        image: docker:24.0.9
+        options: --cgroup-parent=/docker.slice --exec-opt native.cgroupdriver=systemd
     steps:
       - name: checkout
         uses: actions/checkout@v2
