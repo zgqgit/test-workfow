@@ -54,7 +54,7 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
-          registry: https://{{ env.DOCKER_CR }}/
+          registry: https://${{ env.DOCKER_CR }}/
           username: ${{ secrets.CR_DOCKERHUB_USERNAME }}
           password: ${{ secrets.CR_DOCKERHUB_TOKEN }}
       - name: Build frontend and push
@@ -72,7 +72,7 @@ jobs:
             APP_VERSION=${{ steps.get_version.outputs.VERSION }}
           # 生成两个 docker tag: ${APP_VERSION} 和 latest
           tags: |
-            {{ env.DOCKER_CR }}/${{ env.DOCKERHUB_REPO }}bisheng-frontend:latest
-            {{ env.DOCKER_NEXUS }}/${{ env.DOCKERHUB_REPO }}bisheng-frontend:latest
+            ${{ env.DOCKER_CR }}/${{ env.DOCKERHUB_REPO }}bisheng-frontend:latest
+            ${{ env.DOCKER_NEXUS }}/${{ env.DOCKERHUB_REPO }}bisheng-frontend:latest
 
 
