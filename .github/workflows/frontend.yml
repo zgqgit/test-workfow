@@ -23,7 +23,7 @@ jobs:
     services:
       docker:
         image: docker:24.0.9
-        options: --cgroup-parent=/docker.slice --exec-opt native.cgroupdriver=systemd
+        options: --cgroup-parent=/docker.slice
     steps:
       - name: checkout
         uses: actions/checkout@v2
