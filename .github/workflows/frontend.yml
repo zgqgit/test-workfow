@@ -37,7 +37,7 @@ jobs:
         run: echo "RELEASE_VERSION=${{ steps.get_version.outputs.VERSION }}" >> $GITHUB_ENV
       
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v1
 
       - name: set up Docker Buildx
         uses: docker/setup-buildx-action@v3
