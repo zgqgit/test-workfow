@@ -41,13 +41,6 @@ jobs:
 
       - name: set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      
-      - name: Debug QEMU setup
-        run: |
-          echo "Checking QEMU version"
-          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-          qemu-x86_64 --version
-      
       # - name: set insecure registry
       #   run: |
       #     echo "{ \"insecure-registries\": [\"http://${{ env.DOCKER_NEXUS }}\"] }" | sudo tee /etc/docker/daemon.json
