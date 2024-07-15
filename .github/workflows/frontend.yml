@@ -65,4 +65,8 @@ jobs:
       - name: Build frontend images
         id: docker_build_frontend
         run: |
-          docker buildx build --platform linux/amd64,linux/arm64 --tag ${{ env.DOCKER_CR }}/${{ env.DOCKERHUB_REPO }}bisheng-frontend:latest --tag ${{ env.DOCKER_NEXUS }}/${{ env.DOCKERHUB_REPO }}bisheng-frontend:latest --push ./src/frontend/
+          docker buildx build --platform linux/amd64,linux/arm64 --tag ${{ env.DOCKER_CR }}/${{ env.DOCKERHUB_REPO }}bisheng-frontend:latest --output type=docker ./src/frontend/
+      - name: Push frontend images
+        id: push_frontend_images
+        run: |
+          docker push ${{ env.DOCKER_CR }}/${{ env.DOCKERHUB_REPO }}bisheng-frontend:latest
