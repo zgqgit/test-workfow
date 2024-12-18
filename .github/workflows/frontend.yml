@@ -28,6 +28,7 @@ jobs:
         id: get_version
         run: |
           echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+          ls
       
       - name: Set Environment Variable
         run: echo "RELEASE_VERSION=${{ steps.get_version.outputs.VERSION }}" >> $GITHUB_ENV
@@ -72,7 +73,7 @@ jobs:
         with:
           # backend 的context目录
           context: "./src/frontend/"
-          file: "./base_Dockerfile"
+          file: "./src/frontend/base.Dockerfile"
           # 是否 docker push
           push: true
           # docker build arg, 注入 APP_NAME/APP_VERSION
