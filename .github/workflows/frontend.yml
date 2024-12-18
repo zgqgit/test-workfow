@@ -72,7 +72,7 @@ jobs:
         with:
           # backend 的context目录
           context: "./src/frontend/"
-          file: "./base.Dockerfile"
+          file: "./base_Dockerfile"
           # 是否 docker push
           push: true
           # docker build arg, 注入 APP_NAME/APP_VERSION
