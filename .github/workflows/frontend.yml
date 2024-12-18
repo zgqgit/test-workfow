@@ -62,11 +62,28 @@ jobs:
           registry: https://${{ env.DOCKER_CR }}/
           username: ${{ secrets.CR_DOCKERHUB_USERNAME }}
           password: ${{ secrets.CR_DOCKERHUB_TOKEN }}
-      - name: Build frontend images
+      # - name: Build frontend images
+      #   id: docker_build_frontend
+      #   run: |
+      #     docker buildx build --platform linux/amd64,linux/arm64 --tag ${{ env.DOCKER_CR }}/${{ env.DOCKERHUB_REPO }}bisheng-frontend:latest --output type=docker ./src/frontend/
+      # - name: Push frontend images
+      #   id: push_frontend_images
+      #   run: |
+      #     docker push ${{ env.DOCKER_CR }}/${{ env.DOCKERHUB_REPO }}bisheng-frontend:latest
+      - name: Build frontend and push
         id: docker_build_frontend
-        run: |
-          docker buildx build --platform linux/amd64,linux/arm64 --tag ${{ env.DOCKER_CR }}/${{ env.DOCKERHUB_REPO }}bisheng-frontend:latest --output type=docker ./src/frontend/
-      - name: Push frontend images
-        id: push_frontend_images
-        run: |
-          docker push ${{ env.DOCKER_CR }}/${{ env.DOCKERHUB_REPO }}bisheng-frontend:latest
+        uses: docker/build-push-action@v2
+        with:
+          # backend 的context目录
+          context: "./src/frontend/"
+          file: ./base.Dockerfile
+          # 是否 docker push
+          push: true
+          # docker build arg, 注入 APP_NAME/APP_VERSION
+          platforms: linux/amd64,linux/arm64
+          build-args: |
+            APP_NAME="bisheng-backend"
+            APP_VERSION=${{ steps.get_version.outputs.VERSION }}
+          # 生成两个 docker tag: ${APP_VERSION} 和 latest
+          tags: |
+            ${{ env.DOCKER_CR }}/${{ env.DOCKERHUB_REPO }}bisheng-frontend:latest
