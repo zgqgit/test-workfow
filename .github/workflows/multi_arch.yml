@@ -45,24 +45,29 @@ jobs:
 
       - name: Build backend arm64 and push
         id: docker_build_backend_arm
-        uses: docker/build-push-action@v2
-        with:
-          # backend 的context目录
-          context: "./src/backend/"
-          file: ./src/backend/arch.Dockerfile
-          # 是否 docker push
-          push: true
-          # 打出manifest 而不是manifest list
-          provenance: false
-          # docker build arg, 注入 APP_NAME/APP_VERSION
-          platforms: linux/arm64
-          build-args: |
-            APP_NAME="bisheng-backend"
-            APP_VERSION=${{ steps.get_version.outputs.VERSION }}
-            PANDOC_ARCH=arm64
-          # 生成两个 docker tag: ${APP_VERSION} 和 latest
-          tags: |
-            ${{ env.DOCKERHUB_REPO }}test:${{ steps.get_version.outputs.VERSION }}-arm64
+        run: |
+          docker buildx build --build-arg PANDOC_ARCH=arm64 --file ./src/backend/arch.Dockerfile --platform linux/arm64 --provenance false --tag ${{ env.DOCKERHUB_REPO }}test:${{ steps.get_version.outputs.VERSION }}-arm64 --push ./src/backend/
+
+      # - name: Build backend arm64 and push
+      #   id: docker_build_backend_arm
+      #   uses: docker/build-push-action@v2
+      #   with:
+      #     # backend 的context目录
+      #     context: "./src/backend/"
+      #     file: ./src/backend/arch.Dockerfile
+      #     # 是否 docker push
+      #     push: true
+      #     # 打出manifest 而不是manifest list
+      #     provenance: false
+      #     # docker build arg, 注入 APP_NAME/APP_VERSION
+      #     platforms: linux/arm64
+      #     build-args: |
+      #       APP_NAME="bisheng-backend"
+      #       APP_VERSION=${{ steps.get_version.outputs.VERSION }}
+      #       PANDOC_ARCH=arm64
+      #     # 生成两个 docker tag: ${APP_VERSION} 和 latest
+      #     tags: |
+      #       ${{ env.DOCKERHUB_REPO }}test:${{ steps.get_version.outputs.VERSION }}-arm64
   build_amd_image:
     runs-on: ubuntu-latest
     steps:
@@ -91,24 +96,29 @@ jobs:
 
       - name: Build backend amd64 and push
         id: docker_build_backend_amd
-        uses: docker/build-push-action@v2
-        with:
-          # backend 的context目录
-          context: "./src/backend/"
-          file: ./src/backend/arch.Dockerfile
-          # 是否 docker push
-          push: true
-          # 打出manifest 而不是manifest list
-          provenance: false
-          # docker build arg, 注入 APP_NAME/APP_VERSION
-          platforms: linux/amd64
-          build-args: |
-            APP_NAME="bisheng-backend"
-            APP_VERSION=${{ steps.get_version.outputs.VERSION }}
-            PANDOC_ARCH=amd64
-          # 生成两个 docker tag: ${APP_VERSION} 和 latest
-          tags: |
-            ${{ env.DOCKERHUB_REPO }}test:${{ steps.get_version.outputs.VERSION }}-amd64
+        run: |
+          docker buildx build --build-arg PANDOC_ARCH=amd64 --file ./src/backend/arch.Dockerfile --platform linux/amd64 --provenance false --tag ${{ env.DOCKERHUB_REPO }}test:${{ steps.get_version.outputs.VERSION }}-amd64 --push ./src/backend/
+
+      # - name: Build backend amd64 and push
+      #   id: docker_build_backend_amd
+      #   uses: docker/build-push-action@v2
+      #   with:
+      #     # backend 的context目录
+      #     context: "./src/backend/"
+      #     file: ./src/backend/arch.Dockerfile
+      #     # 是否 docker push
+      #     push: true
+      #     # 打出manifest 而不是manifest list
+      #     provenance: false
+      #     # docker build arg, 注入 APP_NAME/APP_VERSION
+      #     platforms: linux/amd64
+      #     build-args: |
+      #       APP_NAME="bisheng-backend"
+      #       APP_VERSION=${{ steps.get_version.outputs.VERSION }}
+      #       PANDOC_ARCH=amd64
+      #     # 生成两个 docker tag: ${APP_VERSION} 和 latest
+      #     tags: |
+      #       ${{ env.DOCKERHUB_REPO }}test:${{ steps.get_version.outputs.VERSION }}-amd64
   combine_two_images:
     runs-on: ubuntu-latest
     needs: 
