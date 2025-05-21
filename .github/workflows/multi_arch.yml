@@ -17,7 +17,8 @@ jobs:
   build_arm_image:
     runs-on: ubuntu-latest
     steps:
-      
+      - name: checkout
+        uses: actions/checkout@v2
       - name: Get version
         id: get_version
         run: |
@@ -63,6 +64,8 @@ jobs:
   build_amd_image:
     runs-on: ubuntu-latest
     steps:
+      - name: checkout
+        uses: actions/checkout@v2
       - name: Get version
         id: get_version
         run: |
