@@ -104,7 +104,7 @@ jobs:
             PANDOC_ARCH=amd64
           # 生成两个 docker tag: ${APP_VERSION} 和 latest
           tags: |
-            ${{ env.DOCKERHUB_REPO }}test:${{ steps.get_version.outputs.VERSION }}-amd64
+            ${{ env.DOCKERHUB_REPO }}test:${{ steps.get_version.outputs.VERSION }}
   combine_two_images:
     runs-on: ubuntu-latest
     needs: 
@@ -130,5 +130,5 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Combine Two images
         run: |
-          docker manifest create ${{ env.DOCKERHUB_REPO }}test:${{ steps.get_version.outputs.VERSION }} ${{ env.DOCKERHUB_REPO }}test:${{ steps.get_version.outputs.VERSION }}-arm64 ${{ env.DOCKERHUB_REPO }}test:${{ steps.get_version.outputs.VERSION }}-amd64
+          docker manifest create --amend ${{ env.DOCKERHUB_REPO }}test:${{ steps.get_version.outputs.VERSION }} ${{ env.DOCKERHUB_REPO }}test:${{ steps.get_version.outputs.VERSION }}-arm64
           docker manifest push ${{ env.DOCKERHUB_REPO }}test:${{ steps.get_version.outputs.VERSION }}
