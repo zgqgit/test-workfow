@@ -1,0 +1,27 @@
+name: GithubPublishRelease
+
+on:
+  release:
+    types: [published]
+
+env:
+  DOCKERHUB_REPO: dataelement/
+  PY_NEXUS: 110.16.193.170:50083
+  DOCKER_NEXUS: 110.16.193.170:50080
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test_env:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get version
+        id: get_version
+        run: |
+          echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      - name: Echo version
+        id: echo_version
+        run: |
+          echo "this release is link version: ${{ steps.get_version.outputs.VERSION }}"
