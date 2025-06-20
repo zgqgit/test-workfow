@@ -42,7 +42,7 @@ jobs:
       
       - name: change poetry source
         run: |
-          sed -i '7i\RUN poetry source add --priority=primary qh https://pypi.tuna.tsinghua.edu.cn/simple' ./src/backend/Dockerfile
+          sed -i '7i\RUN poetry source add --priority=default qh https://pypi.tuna.tsinghua.edu.cn/simple' ./src/backend/Dockerfile
 
       - name: Build backend arm64 and push
         id: docker_build_backend_arm
