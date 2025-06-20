@@ -1,27 +1,17 @@
-FROM python:3.10-slim
+FROM dataelement/bisheng-backend:base.v3
 
 WORKDIR /app
 
-# Install Poetry
-RUN apt-get update && apt-get install gcc g++ curl build-essential postgresql-server-dev-all -y
-RUN apt-get update && apt-get install procps -y
-# Install font
-RUN apt install fonts-wqy-zenhei -y
-# opencv
-RUN apt-get install -y libglib2.0-0 libsm6 libxrender1 libxext6 libgl1
-RUN curl -sSL https://install.python-poetry.org | python3 -
-# # Add Poetry to PATH
-ENV PATH="${PATH}:/root/.local/bin"
-# # Copy the pyproject.toml and poetry.lock files
-# COPY poetry.lock pyproject.toml ./
-# Copy the rest of the application codes
 COPY ./ ./
 
-RUN python -m pip install --upgrade pip && \
-    pip install shapely==2.0.1 
-
-# Install dependencies
 RUN poetry config virtualenvs.create false
-RUN poetry install --no-interaction --no-ansi --without dev
+RUN poetry update --without dev
 
-CMD ["uvicorn", "bisheng.main:app", "--workers", "2",  "--host", "0.0.0.0", "--port", "7860"]
+# patch langchain-openai lib. remove this when langchain-openai support reasoning_content
+RUN patch -p1 < /app/bisheng/patches/langchain_openai.patch /usr/local/lib/python3.10/site-packages/langchain_openai/chat_models/base.py
+
+# patch fastapi-jwt-auth lib. remove this when remove fastapi-jwt-auth
+# fix fastapi-jwt-auth not support pydantic:v2
+RUN patch -p1 < /app/bisheng/patches/fastapi_jwt_auth.patch /usr/local/lib/python3.10/site-packages/fastapi_jwt_auth/config.py
+
+CMD ["sh entrypoint.sh"]
