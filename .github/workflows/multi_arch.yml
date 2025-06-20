@@ -42,11 +42,15 @@ jobs:
 
       - name: set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+      
+      - name: change poetry source
+        run: |
+          sed -i '22i\RUN poetry source add --priority=primary qh https://pypi.tuna.tsinghua.edu.cn/simple' Dockerfile
 
       - name: Build backend arm64 and push
         id: docker_build_backend_arm
         run: |
-          docker buildx build --build-arg PANDOC_ARCH=arm64 --file ./src/backend/arch.Dockerfile --platform linux/arm64 --provenance false --tag ${{ env.DOCKERHUB_REPO }}/test:${{ steps.get_version.outputs.VERSION }}-arm64 --push ./src/backend/
+          docker buildx build --build-arg PANDOC_ARCH=arm64 --file ./src/backend/Dockerfile --platform linux/arm64 --provenance false --tag ${{ env.DOCKERHUB_REPO }}/test:${{ steps.get_version.outputs.VERSION }}-arm64 --push ./src/backend/
 
       # - name: Build backend arm64 and push
       #   id: docker_build_backend_arm
@@ -97,7 +101,7 @@ jobs:
       - name: Build backend amd64 and push
         id: docker_build_backend_amd
         run: |
-          docker buildx build --build-arg PANDOC_ARCH=amd64 --file ./src/backend/arch.Dockerfile --platform linux/amd64 --provenance false --tag ${{ env.DOCKERHUB_REPO }}/test:${{ steps.get_version.outputs.VERSION }}-amd64 --push ./src/backend/
+          docker buildx build --build-arg PANDOC_ARCH=amd64 --file ./src/backend/Dockerfile --platform linux/amd64 --provenance false --tag ${{ env.DOCKERHUB_REPO }}/test:${{ steps.get_version.outputs.VERSION }}-amd64 --push ./src/backend/
 
       # - name: Build backend amd64 and push
       #   id: docker_build_backend_amd
