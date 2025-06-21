@@ -40,11 +40,11 @@ jobs:
         id: combine_two_images
         run: |
 
-          docker manifest create ${{ env.DOCKERHUB_REPO }}bisheng-frontend:v1.3.0 ${{ env.DOCKERHUB_REPO }}bisheng-frontend:v1.3.0-arm64 ${{ env.DOCKERHUB_REPO }}bisheng-frontend:v1.3.0-amd64
-          docker manifest push ${{ env.DOCKERHUB_REPO }}bisheng-frontend:v1.3.0
+          docker manifest create ${{ env.DOCKERHUB_REPO }}/bisheng-frontend:v1.3.0 ${{ env.DOCKERHUB_REPO }}/bisheng-frontend:v1.3.0-arm64 ${{ env.DOCKERHUB_REPO }}/bisheng-frontend:v1.3.0-amd64
+          docker manifest push ${{ env.DOCKERHUB_REPO }}/bisheng-frontend:v1.3.0
 
-          docker manifest create ${{ env.DOCKERHUB_REPO }}bisheng-frontend:latest ${{ env.DOCKERHUB_REPO }}bisheng-frontend:v1.3.0-arm64 ${{ env.DOCKERHUB_REPO }}bisheng-frontend:v1.3.0-amd64
-          docker manifest push ${{ env.DOCKERHUB_REPO }}bisheng-frontend:latest
+          docker manifest create ${{ env.DOCKERHUB_REPO }}/bisheng-frontend:latest ${{ env.DOCKERHUB_REPO }}/bisheng-frontend:v1.3.0-arm64 ${{ env.DOCKERHUB_REPO }}/bisheng-frontend:v1.3.0-amd64
+          docker manifest push ${{ env.DOCKERHUB_REPO }}/bisheng-frontend:latest
   build_arm_image:
     runs-on: ubuntu-24.04-arm
     steps:
