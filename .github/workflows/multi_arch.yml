@@ -14,37 +14,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  combine_publish_images:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get version
-        id: get_version
-        run: |
-          echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-      - name: Echo version
-        id: echo_version
-        run: |
-          echo "this release is link version: ${{ steps.get_version.outputs.VERSION }}"
-
-      # 登录 docker hub
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          # GitHub Repo => Settings => Secrets 增加 docker hub 登录密钥信息
-          # DOCKERHUB_USERNAME 是 docker hub 账号名.
-          # DOCKERHUB_TOKEN: docker hub => Account Setting => Security 创建.
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Combine two images
-        id: combine_two_images
-        run: |
-
-          docker manifest create ${{ env.DOCKERHUB_REPO }}/bisheng-frontend:v1.3.0 ${{ env.DOCKERHUB_REPO }}/bisheng-frontend:v1.3.0-arm64 ${{ env.DOCKERHUB_REPO }}/bisheng-frontend:v1.3.0-amd64
-          docker manifest push ${{ env.DOCKERHUB_REPO }}/bisheng-frontend:v1.3.0
-
-          docker manifest create ${{ env.DOCKERHUB_REPO }}/bisheng-frontend:latest ${{ env.DOCKERHUB_REPO }}/bisheng-frontend:v1.3.0-arm64 ${{ env.DOCKERHUB_REPO }}/bisheng-frontend:v1.3.0-amd64
-          docker manifest push ${{ env.DOCKERHUB_REPO }}/bisheng-frontend:latest
   build_arm_image:
     runs-on: ubuntu-24.04-arm
     steps:
@@ -71,10 +40,6 @@ jobs:
       - name: set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       
-      - name: change poetry source
-        run: |
-          sed -i '7i\RUN poetry source add --priority=primary qh https://pypi.tuna.tsinghua.edu.cn/simple' ./src/backend/Dockerfile
-
       - name: Build backend arm64 and push
         id: docker_build_backend_arm
         run: |
@@ -131,26 +96,6 @@ jobs:
         run: |
           docker buildx build --build-arg PANDOC_ARCH=amd64 --file ./src/backend/Dockerfile --platform linux/amd64 --provenance false --tag ${{ env.DOCKERHUB_REPO }}/test:${{ steps.get_version.outputs.VERSION }}-amd64 --push ./src/backend/
 
-      # - name: Build backend amd64 and push
-      #   id: docker_build_backend_amd
-      #   uses: docker/build-push-action@v2
-      #   with:
-      #     # backend 的context目录
-      #     context: "./src/backend/"
-      #     file: ./src/backend/arch.Dockerfile
-      #     # 是否 docker push
-      #     push: true
-      #     # 打出manifest 而不是manifest list
-      #     provenance: false
-      #     # docker build arg, 注入 APP_NAME/APP_VERSION
-      #     platforms: linux/amd64
-      #     build-args: |
-      #       APP_NAME="bisheng-backend"
-      #       APP_VERSION=${{ steps.get_version.outputs.VERSION }}
-      #       PANDOC_ARCH=amd64
-      #     # 生成两个 docker tag: ${APP_VERSION} 和 latest
-      #     tags: |
-      #       ${{ env.DOCKERHUB_REPO }}/test:${{ steps.get_version.outputs.VERSION }}-amd64
   combine_two_images:
     runs-on: ubuntu-latest
     needs: 
